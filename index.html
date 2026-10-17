@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102c52">
+  <title>Mr Bowen N Virtual Platform</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar"><div class="brand-mark">BN</div><div><strong>Mr Bowen N</strong><span>Virtual Learning Platform</span></div></header>
+  <main class="layout">
+    <section class="intro">
+      <p class="eyebrow">LEARN • PRACTISE • PROGRESS</p>
+      <h1>Your learning journey starts here.</h1>
+      <p>Access your classes, virtual lessons, learning materials and assessments in one place.</p>
+      <div class="feature-list"><div>✓ Course and lesson access</div><div>✓ Student learning progress</div><div>✓ Dedicated trainer and student areas</div></div>
+    </section>
+    <section class="login-card" aria-labelledby="login-title">
+      <h2 id="login-title">Sign in</h2><p class="muted">Use the username and password provided to you.</p>
+      <form id="login-form">
+        <label for="role">Account type</label>
+        <select id="role" name="role" required><option value="student">Student</option><option value="trainer">Trainer</option></select>
+        <label for="username">Username</label><input id="username" name="username" autocomplete="username" required maxlength="100">
+        <label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required maxlength="200">
+        <button id="submit-button" type="submit">Sign in securely</button>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+      </form>
+      <p class="small-note">If you cannot sign in, contact your platform administrator.</p>
+    </section>
+  </main>
+  <footer>© <span id="year"></span> Mr Bowen N Virtual Platform</footer>
+  <script src="config.js"></script><script src="app.js"></script>
+</body>
+</html>
