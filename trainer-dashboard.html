@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trainer Dashboard | Mr Bowen N Virtual Platform</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <main class="dashboard-container">
+    <header class="dashboard-header">
+      <div>
+        <h1>Trainer Dashboard</h1>
+        <p id="trainer-name">Welcome, Trainer</p>
+      </div>
+
+      <button id="logout-button" type="button">Logout</button>
+    </header>
+
+    <section class="dashboard-content">
+      <h2>Teaching and Learning</h2>
+      <p>
+        Welcome to your trainer dashboard. This is the starting page
+        for managing your virtual lessons.
+      </p>
+
+      <div class="dashboard-grid">
+        <article class="dashboard-card">
+          <h3>My Lessons</h3>
+          <p>Lesson management will be connected here.</p>
+        </article>
+
+        <article class="dashboard-card">
+          <h3>Student Submissions</h3>
+          <p>Student work and submitted links will appear here.</p>
+        </article>
+
+        <article class="dashboard-card">
+          <h3>Learning Materials</h3>
+          <p>Notes, assignments, and learning resources will appear here.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Check whether a login session exists.
+    const token = sessionStorage.getItem("virtual_platform_token");
+    const userText = sessionStorage.getItem("virtual_platform_user");
+
+    if (!token || !userText) {
+      window.location.href = "index.html";
+    } else {
+      try {
+        const user = JSON.parse(userText);
+
+        if (user.role !== "trainer") {
+          window.location.href = "index.html";
+        } else {
+          document.getElementById("trainer-name").textContent =
+            "Welcome, " + (user.username || "Trainer");
+        }
+      } catch (error) {
+        sessionStorage.clear();
+        window.location.href = "index.html";
+      }
+    }
+
+    document.getElementById("logout-button").addEventListener("click", function () {
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
