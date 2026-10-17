@@ -31,7 +31,6 @@ form.addEventListener("submit", async (event) => {
   setStatus("Verifying your account…");
 
   try {
-    // Clear any previous login session before a new attempt.
     sessionStorage.removeItem("virtualPlatformToken");
     sessionStorage.removeItem("virtualPlatformUser");
 
@@ -47,7 +46,8 @@ form.addEventListener("submit", async (event) => {
 
     if (!response.ok || data.status !== "authenticated") {
       throw new Error(
-        data.error || data.message || "Sign-in failed. Check your details."
+        data.error || data.message ||
+        "Sign-in failed. Check your details."
       );
     }
 
@@ -62,11 +62,7 @@ form.addEventListener("submit", async (event) => {
     );
 
     if (data.user.must_change_password) {
-      setStatus(
-        "Your account requires a password change before continuing. " +
-        "The password-change page still needs to be connected.",
-        true
-      );
+      window.location.href = "change-password.html";
       return;
     }
 
