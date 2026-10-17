@@ -1,6 +1,8 @@
+
 const form = document.querySelector('#login-form');
 const statusBox = document.querySelector('#status');
 const submitButton = document.querySelector('#submit-button');
+
 document.querySelector('#year').textContent = new Date().getFullYear();
 
 function setStatus(message, success = false) {
@@ -10,30 +12,59 @@ function setStatus(message, success = false) {
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
-  const apiBase = (window.VIRTUAL_PLATFORM_CONFIG?.API_BASE_URL || '').replace(/\/$/, '');
-  if (!apiBase || apiBase.includes('REPLACE-WITH-YOUR-BACKEND-URL')) {
-    setStatus('The platform administrator must configure the backend URL before login is available.');
+
+  const apiBase = (
+    window.VIRTUAL_PLATFORM_CONFIG?.API_BASE_URL || ''
+  ).replace(/\/$/, '');
+
+  if (
+    !apiBase ||
+    apiBase.includes('REPLACE-WITH-YOUR-BACKEND-URL')
+  ) {
+    setStatus(
+      'The platform administrator must configure the backend URL before login is available.'
+    );
     return;
   }
+
   submitButton.disabled = true;
-  setStatus('Signing in…');
+  setStatus('Connecting to the platform service…');
+
   try {
-    const response = await fetch(`${apiBase}/api/auth/login`, {
+    const response = await fetch(apiBase, {
       method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
-        username: form.username.value.trim(),
-        password: form.password.value,
-        role: form.role.value
+        name: 'Functions'
       })
     });
+
     const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || 'Unable to sign in.');
-    setStatus('Login succeeded. The next stage is to connect your learning dashboard.', true);
-    // Do not redirect until role-specific frontend pages are implemented and tested.
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || data.error || `Request failed (${response.status}).`
+      );
+    }
+
+    if (data.status === 'running') {
+      setStatus(
+        'Backend connection successful! Secure login is not enabled yet.',
+        true
+      );
+    } else {
+      setStatus(
+        'The backend responded, but it is not yet configured for login.'
+      );
+    }
   } catch (error) {
-    setStatus(error.message || 'Could not contact the login service. Check the backend URL and deployment.');
+    console.error('Backend connection error:', error);
+
+    setStatus(
+      'Could not connect to the backend. Please check the function deployment and browser connection.'
+    );
   } finally {
     submitButton.disabled = false;
   }
