@@ -1,76 +1,777 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Trainer Dashboard | Mr Bowen N Virtual Platform</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --navy: #10233f;
+      --blue: #2459d3;
+      --bg: #f3f6fb;
+      --border: #e1e7f0;
+      --muted: #65738a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: #17243a;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
+      background: var(--navy);
+      color: white;
+      padding: 18px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand { font-size: 19px; font-weight: 700; }
+    .brand small {
+      display: block;
+      font-size: 12px;
+      margin-top: 5px;
+      color: #bdcce3;
+      font-weight: 400;
+    }
+
+    .logout {
+      border: 1px solid #9db2d1;
+      background: transparent;
+      color: white;
+      padding: 9px 15px;
+      border-radius: 8px;
+    }
+
+    .container {
+      width: min(1200px, 92%);
+      margin: 28px auto 50px;
+    }
+
+    .welcome {
+      background: linear-gradient(120deg, #153665, #2764d7);
+      color: white;
+      padding: 28px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+    }
+
+    .welcome h1 { margin: 0 0 8px; font-size: 28px; }
+    .welcome p { margin: 0; color: #e0eaff; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+      margin-bottom: 24px;
+    }
+
+    .stat, .panel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 20px;
+    }
+
+    .stat span { color: var(--muted); font-size: 13px; }
+    .stat strong { display: block; font-size: 28px; margin-top: 8px; }
+
+    .panel { margin-bottom: 22px; }
+    .panel h2 { margin: 0 0 17px; font-size: 20px; }
+    .panel h3 { margin-top: 0; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field.full { grid-column: 1 / -1; }
+    label { font-size: 13px; font-weight: 700; }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid #cbd5e3;
+      border-radius: 8px;
+      padding: 11px;
+      background: white;
+      color: #17243a;
+    }
+
+    textarea { min-height: 95px; resize: vertical; }
+
+    .btn {
+      border: 0;
+      border-radius: 8px;
+      background: var(--blue);
+      color: white;
+      padding: 11px 16px;
+      font-weight: 700;
+    }
+
+    .btn.secondary { background: #e9effb; color: #1945a3; }
+    .btn.danger { background: #b42332; }
+    .btn:disabled { opacity: .6; cursor: wait; }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 13px; }
+    .message { margin: 14px 0; font-size: 14px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .hidden { display: none !important; }
+
+    .item {
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 10px;
+      margin-top: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .item h3 { margin-bottom: 7px; }
+    .item p { line-height: 1.5; }
+    .item a { color: #1e50b5; }
+    .item-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: inline-block;
+      background: #e9effb;
+      color: #1945a3;
+      padding: 5px 9px;
+      border-radius: 30px;
+      font-size: 12px;
+    }
+
+    .empty { padding: 15px 0; color: var(--muted); }
+    .loading { color: var(--muted); }
+
+    @media (max-width: 650px) {
+      .stats { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .welcome h1 { font-size: 23px; }
+      .panel { padding: 16px; }
+    }
+  </style>
 </head>
 
 <body>
-  <main class="dashboard-container">
-    <header class="dashboard-header">
-      <div>
-        <h1>Trainer Dashboard</h1>
-        <p id="trainer-name">Welcome, Trainer</p>
-      </div>
+  <header class="topbar">
+    <div class="brand">
+      Mr Bowen N Virtual Platform
+      <small>Trainer workspace</small>
+    </div>
+    <button class="logout" id="logoutButton" type="button">Logout</button>
+  </header>
 
-      <button id="logout-button" type="button">Logout</button>
-    </header>
-
-    <section class="dashboard-content">
-      <h2>Teaching and Learning</h2>
-      <p>
-        Welcome to your trainer dashboard. This is the starting page
-        for managing your virtual lessons.
+  <main class="container">
+    <section class="welcome">
+      <h1>Trainer Dashboard</h1>
+      <p id="welcomeText">Welcome, Trainer</p>
+      <p class="muted" style="color:#e0eaff;margin-top:12px">
+        Manage lessons, learning resources, students and submissions.
       </p>
+    </section>
 
-      <div class="dashboard-grid">
-        <article class="dashboard-card">
-          <h3>My Lessons</h3>
-          <p>Lesson management will be connected here.</p>
-        </article>
+    <div id="globalMessage" class="message" role="status" aria-live="polite"></div>
 
-        <article class="dashboard-card">
-          <h3>Student Submissions</h3>
-          <p>Student work and submitted links will appear here.</p>
-        </article>
-
-        <article class="dashboard-card">
-          <h3>Learning Materials</h3>
-          <p>Notes, assignments, and learning resources will appear here.</p>
-        </article>
+    <section class="stats">
+      <div class="stat">
+        <span>My lessons</span>
+        <strong id="lessonCount">—</strong>
       </div>
+      <div class="stat">
+        <span>Learning materials</span>
+        <strong id="materialCount">—</strong>
+      </div>
+      <div class="stat">
+        <span>Students</span>
+        <strong id="studentCount">—</strong>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Create a lesson</h2>
+      <form id="lessonForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="lessonTitle">Lesson title *</label>
+            <input id="lessonTitle" maxlength="200" required
+              placeholder="e.g. Introduction to Technical Drawing">
+          </div>
+          <div class="field">
+            <label for="lessonClass">Class or group</label>
+            <input id="lessonClass" maxlength="100"
+              placeholder="e.g. AEL525S">
+          </div>
+          <div class="field full">
+            <label for="lessonDescription">Description / instructions</label>
+            <textarea id="lessonDescription" maxlength="10000"
+              placeholder="Describe the lesson and learning activities"></textarea>
+          </div>
+          <div class="field full">
+            <label for="lessonUrl">Lesson content URL (optional)</label>
+            <input id="lessonUrl" type="url" maxlength="2000"
+              placeholder="https://...">
+          </div>
+          <div class="field">
+            <label for="lessonPublished">Publishing status</label>
+            <select id="lessonPublished">
+              <option value="false">Save as draft</option>
+              <option value="true">Publish for students</option>
+            </select>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" type="submit">Create lesson</button>
+          <button class="btn secondary" type="button" id="refreshLessons">Refresh lessons</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>My Lessons</h2>
+      <p class="muted">Publish a lesson when it is ready for students.</p>
+      <div id="lessonsList" class="loading">Loading lessons...</div>
+    </section>
+
+    <section class="panel">
+      <h2>Add Learning Material</h2>
+      <form id="materialForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="materialTitle">Material title *</label>
+            <input id="materialTitle" maxlength="200" required
+              placeholder="e.g. Week 1 notes">
+          </div>
+          <div class="field">
+            <label for="materialLesson">Attach to a lesson</label>
+            <select id="materialLesson">
+              <option value="">No lesson selected</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="materialUrl">File or resource URL *</label>
+            <input id="materialUrl" type="url" maxlength="2000" required
+              placeholder="https://...">
+            <span class="muted">Paste a link to a resource already uploaded to an accessible location.</span>
+          </div>
+          <div class="field">
+            <label for="materialClass">Class or group</label>
+            <input id="materialClass" maxlength="100" placeholder="e.g. AEL525S">
+          </div>
+          <div class="field full">
+            <label for="materialDescription">Description</label>
+            <textarea id="materialDescription" maxlength="10000"
+              placeholder="Brief explanation of this resource"></textarea>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" type="submit">Save material</button>
+          <button class="btn secondary" type="button" id="refreshMaterials">Refresh materials</button>
+        </div>
+      </form>
+      <div id="materialsList" class="loading">Loading materials...</div>
+    </section>
+
+    <section class="panel">
+      <h2>Students</h2>
+      <button class="btn secondary" id="refreshStudents" type="button">Load / refresh students</button>
+      <div id="studentsList" class="empty">Select the button to load student accounts.</div>
+    </section>
+
+    <section class="panel">
+      <h2>Student Submissions</h2>
+      <div class="field">
+        <label for="submissionLesson">Choose one of your lessons</label>
+        <select id="submissionLesson">
+          <option value="">Select a lesson</option>
+        </select>
+      </div>
+      <div class="actions">
+        <button class="btn" type="button" id="loadSubmissions">View submissions</button>
+      </div>
+      <div id="submissionsList" class="empty">Choose a lesson to view submissions.</div>
     </section>
   </main>
 
+  <script src="config.js"></script>
   <script>
-    // Check whether a login session exists.
-    const token = sessionStorage.getItem("virtual_platform_token");
-    const userText = sessionStorage.getItem("virtual_platform_user");
+    (() => {
+      "use strict";
 
-    if (!token || !userText) {
-      window.location.href = "index.html";
-    } else {
-      try {
-        const user = JSON.parse(userText);
+      const API = window.VIRTUAL_PLATFORM_CONFIG?.API_BASE_URL;
+      const TOKEN_KEY = "virtual_platform_token";
+      const USER_KEY = "virtual_platform_user";
 
-        if (user.role !== "trainer") {
-          window.location.href = "index.html";
-        } else {
-          document.getElementById("trainer-name").textContent =
-            "Welcome, " + (user.username || "Trainer");
-        }
-      } catch (error) {
-        sessionStorage.clear();
-        window.location.href = "index.html";
+      const token = sessionStorage.getItem(TOKEN_KEY);
+      const userText = sessionStorage.getItem(USER_KEY);
+
+      function goToLogin() {
+        sessionStorage.removeItem(TOKEN_KEY);
+        sessionStorage.removeItem(USER_KEY);
+        window.location.replace("index.html");
       }
-    }
 
-    document.getElementById("logout-button").addEventListener("click", function () {
-      sessionStorage.clear();
-      window.location.href = "index.html";
-    });
+      if (!token || !userText) {
+        goToLogin();
+        return;
+      }
+
+      let user;
+      try {
+        user = JSON.parse(userText);
+      } catch {
+        goToLogin();
+        return;
+      }
+
+      if (user.role !== "trainer") {
+        goToLogin();
+        return;
+      }
+
+      if (user.must_change_password) {
+        window.location.replace("change-password.html");
+        return;
+      }
+
+      if (!API) {
+        document.getElementById("globalMessage").textContent =
+          "Configuration error: API URL is missing from config.js.";
+        return;
+      }
+
+      document.getElementById("welcomeText").textContent =
+        "Welcome, " + (user.full_name || user.username || "Trainer");
+
+      const el = (id) => document.getElementById(id);
+      let lessons = [];
+
+      function showMessage(message, success = false) {
+        const node = el("globalMessage");
+        node.textContent = message;
+        node.style.color = success ? "#187443" : "#b42332";
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        })[char]);
+      }
+
+      function safeUrl(value) {
+        try {
+          const url = new URL(value);
+          return ["http:", "https:"].includes(url.protocol)
+            ? url.href
+            : "";
+        } catch {
+          return "";
+        }
+      }
+
+      async function api(action, payload = {}) {
+        const response = await fetch(API, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({ action, ...payload })
+        });
+
+        let data;
+        try {
+          data = await response.json();
+        } catch {
+          throw new Error("The server returned an invalid response.");
+        }
+
+        if (response.status === 401) {
+          goToLogin();
+          throw new Error("Your session expired. Please sign in again.");
+        }
+
+        if (!response.ok || data.error) {
+          throw new Error(data.error || data.message || "Request failed.");
+        }
+
+        return data;
+      }
+
+      function setBusy(form, busy) {
+        form.querySelectorAll("button").forEach((button) => {
+          button.disabled = busy;
+        });
+      }
+
+      function updateLessonSelectors() {
+        const options = lessons.map((lesson) =>
+          `<option value="${lesson.id}">${escapeHtml(lesson.title)}${lesson.published ? " — Published" : " — Draft"}</option>`
+        ).join("");
+
+        el("materialLesson").innerHTML =
+          '<option value="">No lesson selected</option>' + options;
+
+        el("submissionLesson").innerHTML =
+          '<option value="">Select a lesson</option>' + options;
+      }
+
+      function renderLessons() {
+        el("lessonCount").textContent = lessons.length;
+
+        if (!lessons.length) {
+          el("lessonsList").innerHTML =
+            '<p class="empty">No lessons yet. Use the form above to create your first lesson.</p>';
+          updateLessonSelectors();
+          return;
+        }
+
+        el("lessonsList").innerHTML = lessons.map((lesson) => {
+          const url = safeUrl(lesson.content_url);
+          return `
+            <article class="item">
+              <div class="item-top">
+                <div>
+                  <h3>${escapeHtml(lesson.title)}</h3>
+                  <span class="pill">${lesson.published ? "Published" : "Draft"}</span>
+                  ${lesson.class_name ? `<span class="pill">${escapeHtml(lesson.class_name)}</span>` : ""}
+                </div>
+                <span class="muted">Lesson #${lesson.id}</span>
+              </div>
+              <p>${escapeHtml(lesson.description || "No description added.")}</p>
+              ${url ? `<p><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Open lesson content</a></p>` : ""}
+              <div class="actions">
+                <button class="btn secondary" type="button" data-toggle="${lesson.id}">
+                  ${lesson.published ? "Unpublish" : "Publish"}
+                </button>
+                <button class="btn secondary" type="button" data-edit="${lesson.id}">Edit</button>
+                <button class="btn danger" type="button" data-delete="${lesson.id}">Delete</button>
+                <button class="btn secondary" type="button" data-view="${lesson.id}">View submissions</button>
+              </div>
+            </article>
+          `;
+        }).join("");
+
+        updateLessonSelectors();
+      }
+
+      async function loadLessons() {
+        el("lessonsList").textContent = "Loading lessons...";
+        try {
+          const data = await api("list_lessons");
+          lessons = Array.isArray(data.lessons) ? data.lessons : [];
+          renderLessons();
+        } catch (error) {
+          el("lessonsList").textContent = error.message;
+        }
+      }
+
+      el("lessonForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        setBusy(form, true);
+
+        try {
+          const data = await api("create_lesson", {
+            title: el("lessonTitle").value.trim(),
+            class_name: el("lessonClass").value.trim(),
+            description: el("lessonDescription").value.trim(),
+            content_url: el("lessonUrl").value.trim(),
+            published: el("lessonPublished").value === "true"
+          });
+
+          form.reset();
+          showMessage("Lesson created successfully.", true);
+          await loadLessons();
+        } catch (error) {
+          showMessage(error.message);
+        } finally {
+          setBusy(form, false);
+        }
+      });
+
+      el("lessonsList").addEventListener("click", async (event) => {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const toggleId = button.dataset.toggle;
+        const editId = button.dataset.edit;
+        const deleteId = button.dataset.delete;
+        const viewId = button.dataset.view;
+
+        try {
+          if (toggleId) {
+            const lesson = lessons.find((item) => String(item.id) === toggleId);
+            if (!lesson) return;
+
+            await api("update_lesson", {
+              id: lesson.id,
+              published: !lesson.published
+            });
+
+            showMessage("Lesson publishing status updated.", true);
+            await loadLessons();
+          }
+
+          if (editId) {
+            const lesson = lessons.find((item) => String(item.id) === editId);
+            if (!lesson) return;
+
+            const title = prompt("Lesson title:", lesson.title);
+            if (title === null) return;
+            if (!title.trim()) {
+              showMessage("Lesson title cannot be empty.");
+              return;
+            }
+
+            const description = prompt("Lesson description:", lesson.description || "");
+            if (description === null) return;
+
+            const className = prompt("Class or group:", lesson.class_name || "");
+            if (className === null) return;
+
+            const contentUrl = prompt("Lesson content URL (leave blank for none):", lesson.content_url || "");
+            if (contentUrl === null) return;
+
+            await api("update_lesson", {
+              id: lesson.id,
+              title: title.trim(),
+              description,
+              class_name: className.trim(),
+              content_url: contentUrl.trim()
+            });
+
+            showMessage("Lesson updated.", true);
+            await loadLessons();
+          }
+
+          if (deleteId) {
+            const lesson = lessons.find((item) => String(item.id) === deleteId);
+            if (!lesson) return;
+
+            if (!confirm(`Delete "${lesson.title}"? Its submissions will also be deleted.`)) {
+              return;
+            }
+
+            await api("delete_lesson", { id: lesson.id });
+            showMessage("Lesson deleted.", true);
+            await loadLessons();
+          }
+
+          if (viewId) {
+            el("submissionLesson").value = viewId;
+            await loadSubmissions();
+            el("submissionsList").scrollIntoView({ behavior: "smooth" });
+          }
+        } catch (error) {
+          showMessage(error.message);
+        }
+      });
+
+      async function loadMaterials() {
+        el("materialsList").textContent = "Loading materials...";
+        try {
+          const data = await api("list_materials");
+          const materials = Array.isArray(data.materials) ? data.materials : [];
+          el("materialCount").textContent = materials.length;
+
+          if (!materials.length) {
+            el("materialsList").innerHTML =
+              '<p class="empty">No learning materials added yet.</p>';
+            return;
+          }
+
+          el("materialsList").innerHTML = materials.map((material) => {
+            const url = safeUrl(material.file_url);
+            return `
+              <article class="item">
+                <h3>${escapeHtml(material.title)}</h3>
+                <p>${escapeHtml(material.description || "No description.")}</p>
+                ${material.class_name ? `<p class="muted">Class: ${escapeHtml(material.class_name)}</p>` : ""}
+                ${url ? `<p><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Open learning material</a></p>` : ""}
+              </article>
+            `;
+          }).join("");
+        } catch (error) {
+          el("materialsList").textContent = error.message;
+        }
+      }
+
+      el("materialForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        setBusy(form, true);
+
+        try {
+          const lessonValue = el("materialLesson").value;
+
+          await api("create_material", {
+            title: el("materialTitle").value.trim(),
+            file_url: el("materialUrl").value.trim(),
+            description: el("materialDescription").value.trim(),
+            class_name: el("materialClass").value.trim(),
+            lesson_id: lessonValue ? Number(lessonValue) : null
+          });
+
+          form.reset();
+          showMessage("Learning material saved.", true);
+          await loadMaterials();
+        } catch (error) {
+          showMessage(error.message);
+        } finally {
+          setBusy(form, false);
+        }
+      });
+
+      async function loadStudents() {
+        el("studentsList").textContent = "Loading students...";
+        try {
+          const data = await api("list_students");
+          const students = Array.isArray(data.students) ? data.students : [];
+          el("studentCount").textContent = students.length;
+
+          if (!students.length) {
+            el("studentsList").textContent = "No student accounts found.";
+            return;
+          }
+
+          el("studentsList").innerHTML = students.map((student) => `
+            <article class="item">
+              <strong>${escapeHtml(student.full_name || student.username)}</strong>
+              <p class="muted">Username: ${escapeHtml(student.username)}</p>
+              <p class="muted">Student ID: ${student.id}</p>
+            </article>
+          `).join("");
+        } catch (error) {
+          el("studentsList").textContent = error.message;
+        }
+      }
+
+      el("refreshStudents").addEventListener("click", loadStudents);
+
+      async function loadSubmissions() {
+        const lessonId = el("submissionLesson").value;
+
+        if (!lessonId) {
+          el("submissionsList").textContent = "Choose a lesson first.";
+          return;
+        }
+
+        el("submissionsList").textContent = "Loading submissions...";
+
+        try {
+          const data = await api("list_submissions", {
+            lesson_id: Number(lessonId)
+          });
+          const submissions = Array.isArray(data.submissions) ? data.submissions : [];
+
+          if (!submissions.length) {
+            el("submissionsList").textContent = "No submissions for this lesson yet.";
+            return;
+          }
+
+          el("submissionsList").innerHTML = submissions.map((submission) => {
+            const url = safeUrl(submission.submission_url);
+            return `
+              <article class="item">
+                <h3>${escapeHtml(submission.student?.full_name || submission.student?.username || ("Student #" + submission.student_id))}</h3>
+                <p class="muted">Submitted: ${escapeHtml(submission.submitted_at || "Unknown")}</p>
+                ${url ? `<p><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Open student submission</a></p>` : ""}
+                ${submission.submission_text ? `<p>${escapeHtml(submission.submission_text)}</p>` : ""}
+                <p><strong>Current marks:</strong> ${submission.marks == null ? "Not graded" : escapeHtml(submission.marks)}</p>
+                <p><strong>Feedback:</strong> ${escapeHtml(submission.feedback || "None")}</p>
+                <div class="form-grid">
+                  <div class="field">
+                    <label for="marks-${submission.id}">Marks</label>
+                    <input id="marks-${submission.id}" type="number" min="0" step="0.01"
+                      value="${submission.marks == null ? "" : escapeHtml(submission.marks)}"
+                      placeholder="Enter marks">
+                  </div>
+                  <div class="field">
+                    <label for="feedback-${submission.id}">Feedback</label>
+                    <input id="feedback-${submission.id}" maxlength="5000"
+                      value="${escapeHtml(submission.feedback || "")}"
+                      placeholder="Feedback for student">
+                  </div>
+                </div>
+                <div class="actions">
+                  <button class="btn" type="button" data-grade="${submission.id}">Save marks / feedback</button>
+                </div>
+              </article>
+            `;
+          }).join("");
+        } catch (error) {
+          el("submissionsList").textContent = error.message;
+        }
+      }
+
+      el("loadSubmissions").addEventListener("click", loadSubmissions);
+
+      el("submissionsList").addEventListener("click", async (event) => {
+        const button = event.target.closest("button[data-grade]");
+        if (!button) return;
+
+        const id = button.dataset.grade;
+        const marksText = el("marks-" + id).value.trim();
+        const feedback = el("feedback-" + id).value.trim();
+
+        const payload = { submission_id: Number(id), feedback };
+
+        if (marksText !== "") {
+          const marks = Number(marksText);
+          if (!Number.isFinite(marks) || marks < 0) {
+            showMessage("Enter valid non-negative marks.");
+            return;
+          }
+          payload.marks = marks;
+        }
+
+        button.disabled = true;
+        try {
+          await api("grade_submission", payload);
+          showMessage("Marks and feedback saved.", true);
+          await loadSubmissions();
+        } catch (error) {
+          showMessage(error.message);
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      el("refreshLessons").addEventListener("click", loadLessons);
+      el("refreshMaterials").addEventListener("click", loadMaterials);
+
+      el("logoutButton").addEventListener("click", goToLogin);
+
+      async function start() {
+        await Promise.all([loadLessons(), loadMaterials()]);
+      }
+
+      start();
+    })();
   </script>
 </body>
 </html>
