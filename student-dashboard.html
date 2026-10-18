@@ -1,10 +1,366 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#123b6d"><title>Student Dashboard | Mr Bowen N</title><link rel="stylesheet" href="dashboard.css"></head><body data-role="student">
-<header class="topbar"><a class="brand" href="index.html"><span class="brand-mark">BN</span><span><b>Mr Bowen Noah</b><small>Virtual Learning Platform</small></span></a><div class="top-actions"><span id="signed-in-user">Student</span><button class="btn btn-light" id="refresh-button">Refresh</button><button class="btn btn-danger" id="logout-button">Logout</button></div></header>
-<div class="app-shell student-shell"><aside class="sidebar"><p class="nav-label">MY LEARNING</p><button class="nav-item active" data-view="overview">▦ Overview</button><button class="nav-item" data-view="lessons">🎓 Virtual lessons</button><button class="nav-item" data-view="materials">📖 Learning materials</button><button class="nav-item" data-view="submissions">📤 My submissions</button><p class="nav-label">MORE FEATURES</p><button class="nav-item feature" data-feature="courses">📚 My courses</button><button class="nav-item feature" data-feature="progress">📈 My progress</button><button class="nav-item feature" data-feature="results">🏆 My results</button><button class="nav-item feature" data-feature="past-papers">📑 Past papers</button><button class="nav-item feature" data-feature="quizzes">❓ Quizzes</button><a class="nav-item nav-link" href="https://wa.me/254704654775?text=Hello%20Mr.%20Bowen%2C%20I%20need%20assistance%20with%20my%20unit." target="_blank" rel="noopener">💬 Contact trainer</a></aside>
-<main class="main-content"><div class="page-heading"><div><p class="eyebrow">STUDENT LEARNING SPACE</p><h1 id="page-title">My dashboard</h1><p class="muted">Access your lessons and resources, then continue your learning journey.</p></div><span class="status-pill" id="connection-status">Connecting…</span></div><div id="notice" class="notice" role="status" hidden></div>
-<section id="view-overview" class="view"><div class="welcome-panel"><div><p class="eyebrow light">LEARN · PRACTISE · PROGRESS</p><h2>Welcome, <span id="welcome-name">Student</span> 👋</h2><p>Your courses, virtual lessons and trainer-approved learning resources are gathered here.</p><button class="btn btn-yellow" data-go="lessons">Continue learning →</button></div><div class="welcome-icon">📘</div></div><div class="stats-grid student-stats"><article class="stat-card"><span>Available lessons</span><strong id="stat-lessons">—</strong><small>Lessons returned by the service</small></article><article class="stat-card"><span>Learning materials</span><strong id="stat-materials">—</strong><small>Resources available to you</small></article><article class="stat-card"><span>My submissions</span><strong id="stat-submissions">—</strong><small>Submitted work</small></article></div><div class="content-grid"><section class="panel"><div class="panel-heading"><div><h2>Available lessons</h2><p class="muted">Pick up where you left off.</p></div><button class="btn btn-light" data-go="lessons">View all</button></div><div id="recent-lessons" class="list-area"><p class="empty">Loading lessons…</p></div></section><section class="panel"><h2>Learning centre</h2><button class="quick-action" data-go="lessons"><span>🎓</span><span><b>Virtual lessons</b><small>Study structured lesson content</small></span></button><button class="quick-action" data-go="materials"><span>📖</span><span><b>Learning materials</b><small>Open notes and resources</small></span></button><button class="quick-action" data-go="submissions"><span>📤</span><span><b>My submissions</b><small>Check submitted work</small></span></button></section></div></section>
-<section id="view-lessons" class="view" hidden><section class="panel"><div class="panel-heading"><div><h2>Virtual lessons</h2><p class="muted">Lessons available from your current account.</p></div><button class="btn btn-light" data-reload="lessons">Reload</button></div><div id="lessons-list" class="list-area"><p class="empty">Loading…</p></div></section></section>
-<section id="view-materials" class="view" hidden><section class="panel"><div class="panel-heading"><div><h2>Learning materials</h2><p class="muted">Open notes and resources shared by your trainer.</p></div><button class="btn btn-light" data-reload="materials">Reload</button></div><div id="materials-list" class="list-area"><p class="empty">Loading…</p></div></section></section>
-<section id="view-submissions" class="view" hidden><section class="panel"><div class="panel-heading"><div><h2>My submissions</h2><p class="muted">Your current account's available submissions.</p></div><button class="btn btn-light" data-reload="submissions">Reload</button></div><div id="submissions-list" class="list-area"><p class="empty">Submission history is not yet connected to the student API.</p></div></section></section>
-<section id="view-feature" class="view" hidden><section class="panel feature-panel"><div class="feature-symbol">🧩</div><h2 id="feature-title">Module restoration</h2><p id="feature-description">This original PHP module is recorded in the migration checklist.</p><p class="muted">This feature is not yet connected to the current Supabase API. It is marked as pending so the platform does not pretend to have data that has not been migrated.</p><button class="btn btn-primary" data-go="overview">Return to dashboard</button></section></section>
-<footer>© <span id="year"></span> Mr Bowen N Virtual Platform</footer></main></div><script src="config.js"></script><script src="dashboard.js"></script></body></html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102a56">
+  <title>Student Dashboard | Mr Bowen N Virtual Platform</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    [hidden] { display: none !important; }
+
+    .student-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .student-sidebar {
+      width: 250px;
+      flex-shrink: 0;
+      padding: 24px 16px;
+      background: #102a56;
+      color: white;
+    }
+
+    .student-brand {
+      margin: 0 0 8px;
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .student-subtitle {
+      margin: 0 0 26px;
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+
+    .student-nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .student-nav button {
+      width: 100%;
+      border: 0;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: left;
+      color: #eaf1ff;
+      background: transparent;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    .student-nav button:hover,
+    .student-nav button.active {
+      background: #24477e;
+      color: white;
+    }
+
+    .student-main {
+      min-width: 0;
+      flex: 1;
+      padding: 26px;
+      background: #f4f7fb;
+    }
+
+    .student-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .student-topbar h1 {
+      margin: 0;
+      color: #102a56;
+      font-size: 27px;
+    }
+
+    .student-card {
+      margin-bottom: 18px;
+      padding: 20px;
+      border: 1px solid #e1e8f0;
+      border-radius: 12px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(15, 35, 70, .04);
+    }
+
+    .student-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .student-stat {
+      color: #102a56;
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    .student-muted {
+      color: #64748b;
+    }
+
+    .student-button {
+      display: inline-block;
+      margin: 4px 4px 4px 0;
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 8px;
+      background: #155eef;
+      color: white;
+      font: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .student-button.secondary {
+      background: #e8eef8;
+      color: #102a56;
+    }
+
+    .student-button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .student-message {
+      margin-bottom: 16px;
+      padding: 12px 15px;
+      border-radius: 8px;
+      background: #eaf2ff;
+      color: #173c73;
+    }
+
+    .student-message.error {
+      background: #feecec;
+      color: #9b1c1c;
+    }
+
+    .student-course {
+      margin: 16px 0;
+      padding: 18px;
+      border: 1px solid #e1e8f0;
+      border-radius: 10px;
+      background: white;
+    }
+
+    .student-course h3 {
+      margin-top: 0;
+      color: #102a56;
+    }
+
+    .student-material {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+      border-top: 1px solid #edf0f5;
+    }
+
+    @media (max-width: 760px) {
+      .student-layout { display: block; }
+
+      .student-sidebar {
+        width: auto;
+        padding: 16px;
+      }
+
+      .student-nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .student-main { padding: 16px; }
+    }
+  </style>
+</head>
+
+<body data-role="student">
+  <div class="student-layout">
+    <aside class="student-sidebar">
+      <div class="student-brand">Mr Bowen N</div>
+      <p class="student-subtitle">Virtual Learning Platform</p>
+
+      <nav class="student-nav" aria-label="Student navigation">
+        <button type="button" class="nav-item active" data-view="overview">
+          🏠 Dashboard
+        </button>
+        <button type="button" class="nav-item" data-view="lessons">
+          📖 Lessons
+        </button>
+        <button type="button" class="nav-item" data-view="materials">
+          📁 Materials
+        </button>
+        <button type="button" class="nav-item" data-feature="courses">
+          📚 My courses
+        </button>
+        <button type="button" class="nav-item" data-view="submissions">
+          📝 Submissions
+        </button>
+        <button type="button" class="nav-item" data-feature="progress">
+          📈 Progress
+        </button>
+        <button type="button" class="nav-item" data-feature="results">
+          🏆 Results
+        </button>
+        <button type="button" class="nav-item" data-feature="past-papers">
+          📄 Past papers
+        </button>
+        <button type="button" class="nav-item" data-feature="quizzes">
+          ❓ Quizzes
+        </button>
+        <button type="button" id="student-logout">
+          🚪 Sign out
+        </button>
+      </nav>
+    </aside>
+
+    <main class="student-main">
+      <header class="student-topbar">
+        <div>
+          <h1 id="page-title">Student Dashboard</h1>
+          <p class="student-muted">Welcome to your learning space.</p>
+        </div>
+        <div id="student-account" class="student-muted">Student account</div>
+      </header>
+
+      <div id="notice" class="student-message" role="status" hidden></div>
+
+      <section id="view-overview" class="view">
+        <div class="student-card">
+          <h2>Welcome back!</h2>
+          <p>
+            Access your class courses, lessons, learning materials and
+            submissions from this dashboard.
+          </p>
+          <button type="button" class="student-button" data-feature="courses">
+            View my courses
+          </button>
+        </div>
+
+        <div class="student-grid">
+          <article class="student-card">
+            <div class="student-muted">Lessons</div>
+            <div id="stat-lessons" class="student-stat">—</div>
+          </article>
+          <article class="student-card">
+            <div class="student-muted">Materials</div>
+            <div id="stat-materials" class="student-stat">—</div>
+          </article>
+          <article class="student-card">
+            <div class="student-muted">Submissions</div>
+            <div id="stat-submissions" class="student-stat">—</div>
+          </article>
+        </div>
+
+        <div class="student-card">
+          <h2>Recent lessons</h2>
+          <div id="recent-lessons">
+            <p class="student-muted">Your recent lessons will appear here.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-lessons" class="view" hidden>
+        <div class="student-card">
+          <h2>My lessons</h2>
+          <div id="lessons-list">
+            <p class="student-muted">Loading lessons…</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-materials" class="view" hidden>
+        <div class="student-card">
+          <h2>Learning materials</h2>
+          <div id="materials-list">
+            <p class="student-muted">Loading materials…</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-submissions" class="view" hidden>
+        <div class="student-card">
+          <h2>My submissions</h2>
+          <div id="submissions-list">
+            <p class="student-muted">Your submissions will appear here.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-feature" class="view" hidden>
+        <div class="student-card feature-panel">
+          <div class="feature-symbol">📚</div>
+          <h2>My courses</h2>
+          <p class="student-muted">
+            Your assigned courses and materials will appear here.
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="dashboard.js"></script>
+  <script src="student-courses.js"></script>
+
+  <script>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+
+      function switchView(name, title) {
+        document.querySelectorAll(".view").forEach((view) => {
+          view.hidden = view.id !== "view-" + name;
+        });
+
+        document.querySelectorAll(".nav-item").forEach((button) => {
+          button.classList.toggle(
+            "active",
+            button.dataset.view === name
+          );
+        });
+
+        if ($("page-title")) {
+          $("page-title").textContent = title || "Student Dashboard";
+        }
+      }
+
+      document.querySelectorAll("[data-view]").forEach((button) => {
+        button.addEventListener("click", () => {
+          switchView(button.dataset.view, button.textContent.trim());
+        });
+      });
+
+      document.querySelectorAll('[data-feature="courses"]').forEach((button) => {
+        button.addEventListener("click", () => {
+          switchView("feature", "My courses");
+        });
+      });
+
+      $("student-logout")?.addEventListener("click", () => {
+        sessionStorage.removeItem("virtual_platform_token");
+        sessionStorage.removeItem("virtual_platform_user");
+        window.location.href = "index.html";
+      });
+
+      try {
+        const savedUser = sessionStorage.getItem("virtual_platform_user");
+        if (savedUser && $("student-account")) {
+          const user = JSON.parse(savedUser);
+          $("student-account").textContent =
+            user.full_name || user.name || user.username || "Student account";
+        }
+      } catch (_) {
+        // Leave the default account label if session data is unavailable.
+      }
+    })();
+  </script>
+</body>
+</html>
