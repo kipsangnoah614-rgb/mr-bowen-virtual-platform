@@ -5,362 +5,883 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#102a56">
-  <title>Student Dashboard | Mr Bowen N Virtual Platform</title>
+  <title>Student Dashboard | Mr. Bowen N Virtual Platform</title>
+
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="dashboard.css">
-  <style>
-    [hidden] { display: none !important; }
 
-    .student-layout {
-      display: flex;
+  <style>
+    :root {
+      --student-primary: #1646a0;
+      --student-dark: #102a56;
+      --student-light: #edf4ff;
+      --student-border: #dce5f1;
+      --student-text: #192b45;
+      --student-muted: #66758a;
+      --student-surface: #ffffff;
+      --student-background: #f4f7fb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--student-background);
+      color: var(--student-text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .student-app {
+      display: grid;
+      grid-template-columns: 255px minmax(0, 1fr);
       min-height: 100vh;
     }
 
     .student-sidebar {
-      width: 250px;
-      flex-shrink: 0;
-      padding: 24px 16px;
-      background: #102a56;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 22px 15px;
+      background: var(--student-dark);
       color: white;
     }
 
     .student-brand {
-      margin: 0 0 8px;
-      font-size: 21px;
-      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-bottom: 28px;
+      padding: 0 8px 18px;
+      border-bottom: 1px solid #ffffff25;
     }
 
-    .student-subtitle {
-      margin: 0 0 26px;
-      color: #cbd5e1;
-      font-size: 13px;
+    .student-brand-icon {
+      display: grid;
+      place-items: center;
+      flex: 0 0 43px;
+      height: 43px;
+      border-radius: 12px;
+      background: #ffffff17;
+      font-size: 23px;
+    }
+
+    .student-brand h1 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .student-brand p {
+      margin: 3px 0 0;
+      color: #c7d7f4;
+      font-size: 11px;
+    }
+
+    .student-nav-label {
+      margin: 22px 10px 9px;
+      color: #b4c6e5;
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
     }
 
     .student-nav {
       display: grid;
-      gap: 8px;
+      gap: 5px;
     }
 
-    .student-nav button {
+    .student-nav .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
       width: 100%;
+      min-height: 43px;
+      padding: 11px 12px;
       border: 0;
-      border-radius: 8px;
-      padding: 12px;
-      text-align: left;
-      color: #eaf1ff;
+      border-radius: 9px;
       background: transparent;
-      cursor: pointer;
-      font: inherit;
+      color: #e7efff;
+      text-align: left;
+      font-size: 13px;
+      transition: background .15s ease;
     }
 
-    .student-nav button:hover,
-    .student-nav button.active {
-      background: #24477e;
+    .student-nav .nav-item:hover {
+      background: #ffffff12;
+    }
+
+    .student-nav .nav-item.active {
+      background: #ffffff20;
       color: white;
+      font-weight: bold;
+      box-shadow: inset 3px 0 #75b5ff;
+    }
+
+    .student-nav .nav-item .nav-icon {
+      width: 22px;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .student-sidebar-footer {
+      margin-top: 25px;
+      padding: 15px 8px 0;
+      border-top: 1px solid #ffffff25;
+    }
+
+    .student-sidebar-footer p {
+      margin: 0 0 10px;
+      color: #c7d7f4;
+      font-size: 12px;
     }
 
     .student-main {
       min-width: 0;
-      flex: 1;
-      padding: 26px;
-      background: #f4f7fb;
     }
 
     .student-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
+      gap: 15px;
+      min-height: 76px;
+      padding: 15px 28px;
+      border-bottom: 1px solid var(--student-border);
+      background: #ffffffed;
+      backdrop-filter: blur(10px);
     }
 
-    .student-topbar h1 {
+    .student-topbar h2 {
       margin: 0;
-      color: #102a56;
-      font-size: 27px;
+      color: var(--student-dark);
+      font-size: 21px;
     }
 
-    .student-card {
-      margin-bottom: 18px;
-      padding: 20px;
-      border: 1px solid #e1e8f0;
-      border-radius: 12px;
-      background: white;
-      box-shadow: 0 2px 8px rgba(15, 35, 70, .04);
+    .student-topbar p {
+      margin: 5px 0 0;
+      color: var(--student-muted);
+      font-size: 12px;
     }
 
-    .student-grid {
+    .student-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .student-user {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .student-avatar {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--student-light);
+      color: var(--student-primary);
+      font-weight: bold;
+    }
+
+    .student-content {
+      width: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 25px 28px 40px;
+    }
+
+    .student-hero {
+      position: relative;
+      overflow: hidden;
+      padding: 27px;
+      border-radius: 16px;
+      background: linear-gradient(120deg, #102a56, #1646a0 70%, #1479bc);
+      color: white;
+    }
+
+    .student-hero::after {
+      position: absolute;
+      right: -35px;
+      bottom: -95px;
+      width: 245px;
+      height: 245px;
+      border: 1px solid #ffffff35;
+      border-radius: 50%;
+      content: "";
+      box-shadow: 0 0 0 28px #ffffff08, 0 0 0 57px #ffffff06;
+    }
+
+    .student-hero h3 {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 10px;
+      font-size: clamp(21px, 3vw, 29px);
+    }
+
+    .student-hero p {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 0;
+      color: #e0ebff;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .student-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 15px;
+      margin: 22px 0;
     }
 
     .student-stat {
-      color: #102a56;
-      font-size: 30px;
-      font-weight: 800;
+      padding: 19px;
+      border: 1px solid var(--student-border);
+      border-radius: 13px;
+      background: var(--student-surface);
     }
 
-    .student-muted {
-      color: #64748b;
+    .student-stat-label {
+      color: var(--student-muted);
+      font-size: 12px;
     }
 
-    .student-button {
-      display: inline-block;
-      margin: 4px 4px 4px 0;
-      padding: 10px 14px;
-      border: 0;
-      border-radius: 8px;
-      background: #155eef;
-      color: white;
-      font: inherit;
-      text-decoration: none;
-      cursor: pointer;
+    .student-stat-value {
+      display: block;
+      margin-top: 10px;
+      color: var(--student-dark);
+      font-size: 28px;
+      font-weight: bold;
     }
 
-    .student-button.secondary {
-      background: #e8eef8;
-      color: #102a56;
-    }
-
-    .student-button:disabled {
-      opacity: .6;
-      cursor: wait;
-    }
-
-    .student-message {
-      margin-bottom: 16px;
-      padding: 12px 15px;
-      border-radius: 8px;
-      background: #eaf2ff;
-      color: #173c73;
-    }
-
-    .student-message.error {
-      background: #feecec;
-      color: #9b1c1c;
-    }
-
-    .student-course {
-      margin: 16px 0;
-      padding: 18px;
-      border: 1px solid #e1e8f0;
-      border-radius: 10px;
-      background: white;
-    }
-
-    .student-course h3 {
-      margin-top: 0;
-      color: #102a56;
-    }
-
-    .student-material {
+    .student-section-heading {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      flex-wrap: wrap;
-      padding: 12px 0;
-      border-top: 1px solid #edf0f5;
+      margin: 28px 0 15px;
     }
 
-    @media (max-width: 760px) {
-      .student-layout { display: block; }
+    .student-section-heading h3 {
+      margin: 0;
+      color: var(--student-dark);
+      font-size: 18px;
+    }
+
+    .student-quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .student-quick-card {
+      display: block;
+      width: 100%;
+      padding: 19px;
+      border: 1px solid var(--student-border);
+      border-radius: 13px;
+      background: white;
+      color: var(--student-text);
+      text-align: left;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .student-quick-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px #102a5610;
+    }
+
+    .student-quick-icon {
+      display: grid;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      margin-bottom: 14px;
+      border-radius: 12px;
+      background: var(--student-light);
+      font-size: 22px;
+    }
+
+    .student-quick-card h4 {
+      margin: 0 0 7px;
+      color: var(--student-dark);
+      font-size: 15px;
+    }
+
+    .student-quick-card p {
+      margin: 0;
+      color: var(--student-muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .student-card {
+      padding: 22px;
+      border: 1px solid var(--student-border);
+      border-radius: 13px;
+      background: white;
+    }
+
+    .student-card h2 {
+      margin-top: 0;
+      color: var(--student-dark);
+    }
+
+    .student-muted,
+    .muted {
+      color: var(--student-muted);
+      line-height: 1.6;
+    }
+
+    .empty {
+      padding: 14px;
+      border-radius: 9px;
+      background: #f5f8fc;
+      color: var(--student-muted);
+      line-height: 1.6;
+    }
+
+    .item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin: 12px 0;
+      padding: 16px;
+      border: 1px solid var(--student-border);
+      border-radius: 10px;
+      background: white;
+    }
+
+    .item-row h3 {
+      margin: 0 0 7px;
+      font-size: 15px;
+    }
+
+    .item-row p {
+      margin: 0;
+      color: var(--student-muted);
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .item-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      color: var(--student-muted);
+      font-size: 12px;
+    }
+
+    .panel {
+      margin: 15px 0;
+      padding: 18px;
+      border: 1px solid var(--student-border);
+      border-radius: 12px;
+      background: white;
+    }
+
+    .panel h3 {
+      color: var(--student-dark);
+    }
+
+    .panel-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .stack-form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .stack-form label,
+    #take-quiz-form label {
+      display: grid;
+      gap: 7px;
+      color: var(--student-text);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .stack-form input,
+    .stack-form textarea,
+    .stack-form select,
+    #take-quiz-form textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #cbd6e5;
+      border-radius: 8px;
+      background: white;
+      color: var(--student-text);
+    }
+
+    #take-quiz-form input[type="radio"] {
+      width: auto;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 38px;
+      padding: 9px 14px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--student-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #10387e;
+    }
+
+    .btn-light {
+      border-color: var(--student-border);
+      background: white;
+      color: var(--student-primary);
+    }
+
+    .btn-light:hover {
+      background: var(--student-light);
+    }
+
+    .btn-logout {
+      width: 100%;
+      border: 1px solid #ffffff45;
+      background: #ffffff0c;
+      color: white;
+    }
+
+    #notice {
+      margin-bottom: 18px;
+      padding: 12px 15px;
+      border: 1px solid #bfd8ff;
+      border-radius: 9px;
+      background: #edf5ff;
+      color: #153c76;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    #notice.error {
+      border-color: #f1c0c0;
+      background: #fff0f0;
+      color: #8b1e1e;
+    }
+
+    #connection-status {
+      color: #187344;
+      font-size: 11px;
+    }
+
+    #connection-status.offline {
+      color: #b42318;
+    }
+
+    .student-mobile-menu {
+      display: none;
+    }
+
+    .student-footer {
+      padding: 25px 0 0;
+      color: var(--student-muted);
+      text-align: center;
+      font-size: 11px;
+    }
+
+    @media (max-width: 1050px) {
+      .student-app {
+        grid-template-columns: 220px minmax(0, 1fr);
+      }
+
+      .student-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .student-quick-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .student-app {
+        display: block;
+      }
 
       .student-sidebar {
-        width: auto;
-        padding: 16px;
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 13px;
+      }
+
+      .student-brand {
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+      }
+
+      .student-nav-label {
+        margin-top: 13px;
       }
 
       .student-nav {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .student-main { padding: 16px; }
+      .student-nav .nav-item {
+        min-height: 39px;
+        padding: 9px;
+        font-size: 12px;
+      }
+
+      .student-sidebar-footer {
+        margin-top: 14px;
+      }
+
+      .student-topbar {
+        position: static;
+        padding: 15px;
+      }
+
+      .student-topbar h2 {
+        font-size: 17px;
+      }
+
+      .student-content {
+        padding: 16px;
+      }
+
+      .student-hero {
+        padding: 21px;
+      }
+
+      .student-quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .item-row {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .student-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+      }
+
+      .student-stat {
+        padding: 13px;
+      }
+
+      .student-stat-value {
+        font-size: 23px;
+      }
+
+      .student-user .user-name {
+        display: none;
+      }
     }
   </style>
 </head>
 
 <body data-role="student">
-  <div class="student-layout">
+  <div class="student-app">
+
+    <!-- Sidebar -->
     <aside class="student-sidebar">
-      <div class="student-brand">Mr Bowen N</div>
-      <p class="student-subtitle">Virtual Learning Platform</p>
+      <div class="student-brand">
+        <div class="student-brand-icon">🎓</div>
+        <div>
+          <h1>Mr. Bowen N<br>Virtual Platform</h1>
+          <p>Student Learning Portal</p>
+        </div>
+      </div>
+
+      <p class="student-nav-label">Main menu</p>
 
       <nav class="student-nav" aria-label="Student navigation">
         <button type="button" class="nav-item active" data-view="overview">
-          🏠 Dashboard
+          <span class="nav-icon">🏠</span> Dashboard
         </button>
+
         <button type="button" class="nav-item" data-view="lessons">
-          📖 Lessons
+          <span class="nav-icon">📖</span> Lessons
         </button>
+
         <button type="button" class="nav-item" data-view="materials">
-          📁 Materials
+          <span class="nav-icon">📁</span> Learning Materials
         </button>
+
         <button type="button" class="nav-item" data-feature="courses">
-          📚 My courses
+          <span class="nav-icon">📚</span> My Courses
         </button>
+
         <button type="button" class="nav-item" data-view="submissions">
-          📝 Submissions
-        </button>
-        <button type="button" class="nav-item" data-feature="progress">
-          📈 Progress
-        </button>
-        <button type="button" class="nav-item" data-feature="results">
-          🏆 Results
-        </button>
-        <button type="button" class="nav-item" data-feature="past-papers">
-          📄 Past papers
-        </button>
-        <button type="button" class="nav-item" data-feature="quizzes">
-          ❓ Quizzes
-        </button>
-        <button type="button" id="student-logout">
-          🚪 Sign out
+          <span class="nav-icon">📝</span> Submissions
         </button>
       </nav>
+
+      <p class="student-nav-label">Assessment</p>
+
+      <nav class="student-nav" aria-label="Assessment navigation">
+        <button type="button" class="nav-item" data-feature="progress">
+          <span class="nav-icon">📈</span> My Progress
+        </button>
+
+        <button type="button" class="nav-item" data-feature="results">
+          <span class="nav-icon">🏆</span> My Results
+        </button>
+
+        <button type="button" class="nav-item" data-feature="past-papers">
+          <span class="nav-icon">📄</span> Past Papers
+        </button>
+
+        <button type="button" class="nav-item" data-feature="quizzes">
+          <span class="nav-icon">❓</span> Quizzes
+        </button>
+      </nav>
+
+      <p class="student-nav-label">Learning support</p>
+
+      <nav class="student-nav" aria-label="Learning support navigation">
+        <button type="button" class="nav-item" data-feature="virtual-trainer">
+          <span class="nav-icon">🤖</span> Virtual Trainer
+        </button>
+      </nav>
+
+      <div class="student-sidebar-footer">
+        <p>Signed in as <strong id="student-account">Student</strong></p>
+        <button type="button" id="student-logout" class="btn btn-logout">
+          🚪 Sign out
+        </button>
+      </div>
     </aside>
 
+    <!-- Main area -->
     <main class="student-main">
       <header class="student-topbar">
         <div>
-          <h1 id="page-title">Student Dashboard</h1>
-          <p class="student-muted">Welcome to your learning space.</p>
+          <h2 id="page-title">My dashboard</h2>
+          <p>Learn, practise and track your progress.</p>
         </div>
-        <div id="student-account" class="student-muted">Student account</div>
+
+        <div class="student-topbar-right">
+          <div class="student-user">
+            <div class="student-avatar">🎓</div>
+            <span class="user-name" id="signed-in-user">Student</span>
+          </div>
+        </div>
       </header>
 
-      <div id="notice" class="student-message" role="status" hidden></div>
+      <div class="student-content">
+        <div id="notice" role="status" aria-live="polite" hidden></div>
 
-      <section id="view-overview" class="view">
-        <div class="student-card">
-          <h2>Welcome back!</h2>
-          <p>
-            Access your class courses, lessons, learning materials and
-            submissions from this dashboard.
-          </p>
-          <button type="button" class="student-button" data-feature="courses">
-            View my courses
-          </button>
-        </div>
+        <p id="connection-status">Connecting to learning service…</p>
 
-        <div class="student-grid">
-          <article class="student-card">
-            <div class="student-muted">Lessons</div>
-            <div id="stat-lessons" class="student-stat">—</div>
-          </article>
-          <article class="student-card">
-            <div class="student-muted">Materials</div>
-            <div id="stat-materials" class="student-stat">—</div>
-          </article>
-          <article class="student-card">
-            <div class="student-muted">Submissions</div>
-            <div id="stat-submissions" class="student-stat">—</div>
-          </article>
-        </div>
+        <!-- Dashboard overview -->
+        <section id="view-overview" class="view">
+          <div class="student-hero">
+            <h3>Welcome, <span id="welcome-name">Student</span>! 👋</h3>
+            <p>
+              Welcome to Mr. Bowen N Virtual Platform. Access your lessons,
+              download learning materials, practise with quizzes, review past
+              examination papers and get learning support.
+            </p>
+          </div>
 
-        <div class="student-card">
-          <h2>Recent lessons</h2>
+          <div class="student-stats">
+            <article class="student-stat">
+              <span class="student-stat-label">Available lessons</span>
+              <strong class="student-stat-value" id="stat-lessons">0</strong>
+            </article>
+
+            <article class="student-stat">
+              <span class="student-stat-label">Learning materials</span>
+              <strong class="student-stat-value" id="stat-materials">0</strong>
+            </article>
+
+            <article class="student-stat">
+              <span class="student-stat-label">My submissions</span>
+              <strong class="student-stat-value" id="stat-submissions">0</strong>
+            </article>
+
+            <article class="student-stat">
+              <span class="student-stat-label">Students</span>
+              <strong class="student-stat-value" id="stat-students">—</strong>
+            </article>
+          </div>
+
+          <div class="student-section-heading">
+            <h3>Quick access</h3>
+          </div>
+
+          <div class="student-quick-grid">
+            <button class="student-quick-card" type="button" data-view="lessons">
+              <span class="student-quick-icon">📖</span>
+              <h4>Continue Learning</h4>
+              <p>Open lessons and access learning content.</p>
+            </button>
+
+            <button class="student-quick-card" type="button" data-feature="past-papers">
+              <span class="student-quick-icon">📄</span>
+              <h4>Past Papers</h4>
+              <p>Practise using published examination questions.</p>
+            </button>
+
+            <button class="student-quick-card" type="button" data-feature="quizzes">
+              <span class="student-quick-icon">❓</span>
+              <h4>Take a Quiz</h4>
+              <p>Attempt available quizzes and check your results.</p>
+            </button>
+
+            <button class="student-quick-card" type="button" data-view="materials">
+              <span class="student-quick-icon">📁</span>
+              <h4>Study Materials</h4>
+              <p>Open available notes and course resources.</p>
+            </button>
+
+            <button class="student-quick-card" type="button" data-feature="courses">
+              <span class="student-quick-icon">📚</span>
+              <h4>My Courses</h4>
+              <p>View your assigned courses and units.</p>
+            </button>
+
+            <button class="student-quick-card" type="button" data-feature="virtual-trainer">
+              <span class="student-quick-icon">🤖</span>
+              <h4>Virtual Trainer</h4>
+              <p>Get learning assistance through the available trainer service.</p>
+            </button>
+          </div>
+
+          <div class="student-section-heading">
+            <h3>Recent lessons</h3>
+            <button class="btn btn-light" type="button" data-view="lessons">
+              View all
+            </button>
+          </div>
+
           <div id="recent-lessons">
-            <p class="student-muted">Your recent lessons will appear here.</p>
+            <p class="empty">Loading recent lessons…</p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="view-lessons" class="view" hidden>
-        <div class="student-card">
-          <h2>My lessons</h2>
-          <div id="lessons-list">
-            <p class="student-muted">Loading lessons…</p>
+        <!-- Lessons -->
+        <section id="view-lessons" class="view" hidden>
+          <div class="student-card">
+            <h2>📖 Lessons</h2>
+            <p class="student-muted">Lessons available to your account.</p>
+            <button class="btn btn-light" type="button" data-reload="lessons">
+              Refresh lessons
+            </button>
+            <div id="lessons-list">
+              <p class="empty">Loading lessons…</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="view-materials" class="view" hidden>
-        <div class="student-card">
-          <h2>Learning materials</h2>
-          <div id="materials-list">
-            <p class="student-muted">Loading materials…</p>
+        <!-- Learning materials -->
+        <section id="view-materials" class="view" hidden>
+          <div class="student-card">
+            <h2>📁 Learning Materials</h2>
+            <p class="student-muted">Access resources shared for your studies.</p>
+            <button class="btn btn-light" type="button" data-reload="materials">
+              Refresh materials
+            </button>
+            <div id="materials-list">
+              <p class="empty">Loading materials…</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="view-submissions" class="view" hidden>
-        <div class="student-card">
-          <h2>My submissions</h2>
-          <div id="submissions-list">
-            <p class="student-muted">Your submissions will appear here.</p>
+        <!-- Submissions -->
+        <section id="view-submissions" class="view" hidden>
+          <div class="student-card">
+            <h2>📝 My Submissions</h2>
+            <p class="student-muted">Review submission records returned by the learning service.</p>
+            <button class="btn btn-light" type="button" data-reload="submissions">
+              Refresh submissions
+            </button>
+            <div id="submissions-list">
+              <p class="empty">Loading submissions…</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="view-feature" class="view" hidden>
-        <div class="student-card feature-panel">
-          <div class="feature-symbol">📚</div>
-          <h2>My courses</h2>
-          <p class="student-muted">
-            Your assigned courses and materials will appear here.
-          </p>
-        </div>
-      </section>
+        <!-- Dynamic feature panel -->
+        <section id="view-feature" class="view" hidden>
+          <div class="student-card feature-panel">
+            <h2>Learning feature</h2>
+            <p class="student-muted">Choose a feature from the navigation menu.</p>
+            <div id="feature-content"></div>
+          </div>
+        </section>
+
+        <footer class="student-footer">
+          Mr. Bowen N Virtual Platform · Online Learning Portal
+        </footer>
+      </div>
     </main>
   </div>
 
+  <!-- Load configuration before dashboard scripts -->
   <script src="config.js"></script>
   <script src="dashboard.js"></script>
   <script src="student-courses.js"></script>
 
   <script>
-    (() => {
-      const $ = (id) => document.getElementById(id);
-
-      function switchView(name, title) {
-        document.querySelectorAll(".view").forEach((view) => {
-          view.hidden = view.id !== "view-" + name;
-        });
-
-        document.querySelectorAll(".nav-item").forEach((button) => {
-          button.classList.toggle(
-            "active",
-            button.dataset.view === name
-          );
-        });
-
-        if ($("page-title")) {
-          $("page-title").textContent = title || "Student Dashboard";
-        }
-      }
-
-      document.querySelectorAll("[data-view]").forEach((button) => {
-        button.addEventListener("click", () => {
-          switchView(button.dataset.view, button.textContent.trim());
-        });
-      });
-
-      document.querySelectorAll('[data-feature="courses"]').forEach((button) => {
-        button.addEventListener("click", () => {
-          switchView("feature", "My courses");
-        });
-      });
-
-      $("student-logout")?.addEventListener("click", () => {
-        sessionStorage.removeItem("virtual_platform_token");
-        sessionStorage.removeItem("virtual_platform_user");
-        window.location.href = "index.html";
-      });
-
-      try {
-        const savedUser = sessionStorage.getItem("virtual_platform_user");
-        if (savedUser && $("student-account")) {
-          const user = JSON.parse(savedUser);
-          $("student-account").textContent =
-            user.full_name || user.name || user.username || "Student account";
-        }
-      } catch (_) {
-        // Leave the default account label if session data is unavailable.
-      }
-    })();
+    // Keep the logout control working if the dashboard script is unavailable.
+    document.getElementById('student-logout')?.addEventListener('click', () => {
+      sessionStorage.removeItem('virtual_platform_token');
+      sessionStorage.removeItem('virtual_platform_user');
+      window.location.href = 'index.html';
+    });
   </script>
 </body>
 </html>
